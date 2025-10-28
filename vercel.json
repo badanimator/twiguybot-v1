@@ -14,7 +14,7 @@
   ],
   "crons": [
     {
-      "path": "post-now?type=meme&api_key=supersecretapikey",
+      "path": "/post-now?type=meme&api_key=supersecretapikey",
       "schedule": "*/10 * * * *"
     }
   ]
