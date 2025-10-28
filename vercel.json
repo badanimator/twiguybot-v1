@@ -11,11 +11,5 @@
       "src": "/(.*)",
       "dest": "bot_server.py"
     }
-  ],
-  "crons": [
-    {
-      "path": "/post-now?type=meme&api_key=supersecretapikey",
-      "schedule": "*/10 * * * *"
-    }
   ]
 }
