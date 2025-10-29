@@ -7,6 +7,7 @@ from poster import post_to_telegram
 from config import Config
 from models import Content, TypeConst, SourceConst
 from db import SessionLocal, create_db_and_tables
+from utils import fetch_reddit_posts
 
 
 app = FastAPI(title="Telegram Meme Bot")
@@ -66,15 +67,10 @@ async def troll_football_reddit(x_api_key: str = Header(None)):
         raise HTTPException(status_code=401, detail="Invalid or missing API key")
 
     session = SessionLocal()
-    headers = {"User-Agent": "Mozilla/5.0 (compatible; MemeBot/1.0)"}
 
     try:
-        r = requests.get(
-            "https://www.reddit.com/r/soccercirclejerk/hot.json?limit=20",
-            headers=headers,
-            timeout=10
-        )
-        posts = r.json().get("data", {}).get("children", [])
+        response = fetch_reddit_posts("soccercirclejerk", 20)
+        posts = response.json().get("data", {}).get("children", [])
 
         saved_posts = 0
         for post in posts:
