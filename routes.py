@@ -74,7 +74,7 @@ async def troll_football_reddit(x_api_key: str = Header(None)):
             headers=headers,
             timeout=10
         )
-        posts = r.json()["data"]["children"]
+        posts = r.json().get("data", {}).get("children", [])
 
         saved_posts = 0
         for post in posts:
