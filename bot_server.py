@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Request, HTTPException, Query
+from fastapi import FastAPI, Request, HTTPException, Query, Header
 from fastapi.responses import JSONResponse
 from content import get_content
 from poster import post_to_telegram
@@ -10,10 +10,10 @@ app = FastAPI(title="Telegram Meme Bot")
 async def index():
     return {"message": "Telegram Meme Bot running!"}
 
-@app.api_route("/post-now", methods=["GET", "POST"])
-async def post_now(request: Request, api_key: str = Query(None), type: str = Query(None)):
+@app.post("/post-now")
+async def post_now(request: Request, x_api_key: str = Header(None), type: str = Query(None)):
     # --- Verify API Key ---
-    if api_key != Config.API_KEY:
+    if x_api_key != Config.API_KEY:
         raise HTTPException(status_code=401, detail="Invalid or missing API key")
 
     # --- Get content ---
@@ -29,4 +29,4 @@ async def post_now(request: Request, api_key: str = Query(None), type: str = Que
 # --- Run locally ---
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run("bot_server:app", host="0.0.0.0", port=5000, reload=True)
+    uvicorn.run("bot_server:app", port=5000, reload=True)
