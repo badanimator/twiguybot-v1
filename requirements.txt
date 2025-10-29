@@ -17,6 +17,8 @@ idna==3.11
 itsdangerous==2.2.0
 Jinja2==3.1.6
 MarkupSafe==3.0.3
+praw==7.8.1
+prawcore==2.4.0
 pydantic==2.12.3
 pydantic_core==2.41.4
 python-telegram-bot==20.6
@@ -27,6 +29,8 @@ starlette==0.49.0
 typing-inspection==0.4.2
 typing_extensions==4.15.0
 tzlocal==5.3.1
+update-checker==0.18.0
 urllib3==2.5.0
 uvicorn==0.38.0
+websocket-client==1.9.0
 Werkzeug==3.1.3
