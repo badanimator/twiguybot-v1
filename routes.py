@@ -63,49 +63,23 @@ async def post_now(request: Request, x_api_key: str = Header(None), type: str = 
 
 @app.post("/fetch/football-trolls")
 async def troll_football_reddit(x_api_key: str = Header(None)):
+    """Fetch football memes from Reddit and save them."""
     if x_api_key != Config.API_KEY:
         raise HTTPException(status_code=401, detail="Invalid or missing API key")
 
     session = SessionLocal()
 
     try:
-        response = fetch_reddit_posts("soccercirclejerk", 20)
-        posts = response.json().get("data", {}).get("children", [])
-
+        posts = fetch_reddit_posts("soccercirclejerk", 20)
         saved_posts = 0
-        for post in posts:
-            data = post["data"]
 
-            if data.get("stickied"):
-                continue
-
-            post_url = data.get("url_overridden_by_dest") or data.get("url")
-            if not post_url:
-                continue
-
-            # --- Determine post type ---
-            content_type = TypeConst.TEXT.value
-            if post_url.endswith((".jpg", ".png", ".gif")):
-                content_type = TypeConst.IMAGE.value
-            elif "v.redd.it" in post_url or "gfycat" in post_url or "imgur" in post_url:
-                content_type = TypeConst.VIDEO.value
-            elif data.get("is_video"):
-                content_type = TypeConst.VIDEO.value
-
-            # --- Extract video URL if Reddit-hosted ---
-            if content_type == TypeConst.VIDEO.value:
-                media = data.get("media") or {}
-                reddit_video = media.get("reddit_video") if media else None
-                if reddit_video and reddit_video.get("fallback_url"):
-                    post_url = reddit_video["fallback_url"]
-
-            # --- Create record ---
+        for data in posts:
             content = Content(
-                source_id=data["id"],
-                source=SourceConst.REDDIT.value,
+                source_id=data["source_id"],
+                source=data["source"],
                 title=data["title"][:480],
-                url=post_url,
-                type=content_type,
+                url=data["url"],
+                type=data["type"],
                 fetched_at=datetime.now()
             )
 
@@ -128,7 +102,6 @@ async def troll_football_reddit(x_api_key: str = Header(None)):
 
     finally:
         session.close()
-
 
 # --- Run locally ---
 if __name__ == "__main__":
