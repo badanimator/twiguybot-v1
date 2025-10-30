@@ -33,12 +33,13 @@ def fetch_reddit_posts(subreddit: str = "soccercirclejerk", limit: int = 20):
 
     return posts
 
-def download_video(url):
-    response = requests.get(url, stream=True)
-    if not response.ok:
+def download_video(url: str):
+    try:
+        response = requests.get(url, stream=True, timeout=30)
+        response.raise_for_status()
+        video_data = BytesIO(response.content)
+        video_data.name = "video.mp4"
+        return video_data
+    except Exception as e:
+        print(f"⚠️ Error downloading video: {e}")
         return None
-
-    video_data = BytesIO(response.content)
-    video_data.name = "video.mp4"
-    return video_data
-
