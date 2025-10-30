@@ -5,12 +5,12 @@ from fastapi import FastAPI, Request, HTTPException, Query, Header
 from fastapi.responses import JSONResponse
 from poster import post_to_telegram
 from config import Config
-from models import Content, TypeConst, SourceConst
+from models import Content, ChannelSubcription, TypeConst, SourceConst
 from db import SessionLocal, create_db_and_tables
 from utils import fetch_reddit_posts
 
 
-app = FastAPI(title="Telegram Meme Bot")
+app = FastAPI(title="Telegram Bot")
 db = SessionLocal()
 
 @app.on_event("startup")
@@ -36,9 +36,23 @@ def list_content(
     finally:
         session.close()
 
+@app.get("/subscriptions")
+def list_subscriptions(request: Request, x_api_key: str = Header(None), limit: int = Query(10)):
+    if x_api_key != Config.API_KEY:
+        raise HTTPException(status_code=401, detail="Invalid or missing API key")
+    
+    session = SessionLocal()
+
+    try:
+        subs = session.query(ChannelSubcription).limit(limit).all()
+        return [s.to_dict() for s in subs]
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error fetching data: {e.args}")
+    finally:
+        session.close()
 
 @app.post("/post-now")
-async def post_now(request: Request, x_api_key: str = Header(None), type: str = Query(None)):
+async def post_now(request: Request, x_api_key: str = Header(None), limit: int = Query(10)):
     # --- Verify API Key ---
     if x_api_key != Config.API_KEY:
         raise HTTPException(status_code=401, detail="Invalid or missing API key")
@@ -47,7 +61,7 @@ async def post_now(request: Request, x_api_key: str = Header(None), type: str = 
         db.query(Content)
         .filter(Content.posted == False)
         .order_by(Content.priority.desc(), Content.fetched_at.asc())
-        .limit(10)
+        .limit(limit)
         .offset(0)
         .first()
     )

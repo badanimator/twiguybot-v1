@@ -4,7 +4,7 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 class Config:
     BOT_TOKEN = os.getenv("BOT_TOKEN", "8358721757:AAGJBleg1qmwmjeP08NNjIz_VCXNCLtagaE")
     CHANNEL_ID = os.getenv("CHANNEL_ID", "@twiguy")
-    API_KEY = os.getenv("API_KEY", "supersecretapikey")
+    API_KEY = os.getenv("API_KEY", "D6q9wrIsedFZ7ydV+BP3Q4lSyA4pi7w8z393vT2rEy4")
     SQLALCHEMY_DATABASE_URI = os.getenv("SQLALCHEMY_DATABASE_URI", f'sqlite:///' + os.path.join(basedir, 'data-dev.sqlite'))
 
     REDDIT_CLIENT_ID = os.getenv("REDDIT_CLIENT_ID", "UOcZNPZekP4DuqrnmA1V5Q")

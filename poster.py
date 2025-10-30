@@ -6,6 +6,7 @@ from telegram.constants import ParseMode
 from config import Config
 from models import Content, TypeConst
 from db import SessionLocal
+from utils import download_video
 
 bot = Bot(token=Config.BOT_TOKEN)
 
@@ -47,9 +48,11 @@ async def post_to_telegram(content_id: int):
                 parse_mode=ParseMode.MARKDOWN_V2,
             )
         elif content.type == TypeConst.VIDEO.value:
+            video_data = download_video(url)
+
             await bot.send_video(
                 chat_id=Config.CHANNEL_ID,
-                video=url,
+                video=video_data,
                 caption=message_caption,
                 parse_mode=ParseMode.MARKDOWN_V2,
             )

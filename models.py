@@ -21,9 +21,35 @@ class TypeConst(Enum):
     VIDEO = "video"
     TEXT = "text"
 
+class ContentCategory(str, Enum):
+    FOOTBALL_MEME = "football_meme"
+    NEWS = "news"
 
 
 # models
+class ChannelSubcription(Base):
+    __tablename__= "channel_subscriptions"
+    
+    id = Column(Integer, primary_key=True)
+    channel_id = Column(String(255), unique=True, nullable=False)
+    channel_name = Column(String(255))
+    category = Column(String(100), nullable=True)
+    added_at = Column(DateTime, default=datetime.now)
+
+    def to_dict(self):
+        """Return a serializable dict representation of the content."""
+        return {
+            "id": self.id,
+            "channel_id": self.channel_id,
+            "channel_id": self.channel_id,
+            "category": self.category,
+            "added_at": self.posted_at.isoformat() if self.posted_at else None,
+        } 
+
+    def __repr__(self):
+        return f"<ChannelSubcription(id={self.id}, channel_id={self.channel_id}, channel_name={self.channel_name[:30]}...)>"
+
+
 class Content(Base):
     __tablename__ = "content"
 

@@ -1,5 +1,7 @@
 import praw
 from config import Config
+import requests
+from io import BytesIO
 
 reddit = praw.Reddit(
     client_id=Config.REDDIT_CLIENT_ID,
@@ -30,4 +32,13 @@ def fetch_reddit_posts(subreddit: str = "soccercirclejerk", limit: int = 20):
         })
 
     return posts
+
+def download_video(url):
+    response = requests.get(url, stream=True)
+    if not response.ok:
+        return None
+
+    video_data = BytesIO(response.content)
+    video_data.name = "video.mp4"
+    return video_data
 
