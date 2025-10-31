@@ -63,11 +63,6 @@ async def post_to_telegram(content_id: int):
                 parse_mode=ParseMode.MARKDOWN_V2,
             )
 
-        # ✅ Mark as posted
-        content.posted = True
-        content.posted_at = datetime.now()
-        session.commit()
-
         print(f"✅ Posted content ID {content.id} ({content.type}) successfully.")
         return {"status": "success"}
 
@@ -76,4 +71,8 @@ async def post_to_telegram(content_id: int):
         print(f"⚠️ Telegram send error: {e}")
         return {"status": "error", "error": str(e)}
     finally:
+        # ✅ Mark as posted
+        content.posted = True
+        content.posted_at = datetime.now()
+        session.commit()
         session.close()
