@@ -21,15 +21,15 @@ class TypeConst(Enum):
     VIDEO = "video"
     TEXT = "text"
 
-class ContentCategory(str, Enum):
+class ContentCategoryConst(str, Enum):
     FOOTBALL_MEME = "football_meme"
     NEWS = "news"
 
 
 # models
-class ChannelSubcription(Base):
-    __tablename__= "channel_subscriptions"
-    
+class ChannelSubscription(Base):
+    __tablename__ = "channel_subscriptions"
+
     id = Column(Integer, primary_key=True)
     channel_id = Column(String(255), unique=True, nullable=False)
     channel_name = Column(String(255))
@@ -43,7 +43,7 @@ class ChannelSubcription(Base):
             "channel_id": self.channel_id,
             "channel_id": self.channel_id,
             "category": self.category,
-            "added_at": self.posted_at.isoformat() if self.posted_at else None,
+            "added_at": self.added_at.isoformat() if self.added_at else None,
         } 
 
     def __repr__(self):
@@ -56,8 +56,9 @@ class Content(Base):
     id = Column(Integer, primary_key=True)
     source_id = Column(String(100), unique=True, nullable=False)
     source = Column(String(50), default=SourceConst.REDDIT.value)
-    title = Column(String(500))
-    url = Column(String(500))
+    title = Column(String(255))
+    url = Column(String(255))
+    category = Column(String(255))
     type = Column(String(50), default=TypeConst.TEXT.value)
     posted = Column(Boolean, default=False)
     fetched_at = Column(DateTime, default=datetime.now)

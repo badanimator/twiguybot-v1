@@ -1,7 +1,8 @@
 import praw
-from config import Config
 import requests
 from io import BytesIO
+from config import Config
+from models import ContentCategoryConst
 
 reddit = praw.Reddit(
     client_id=Config.REDDIT_CLIENT_ID,
@@ -9,7 +10,7 @@ reddit = praw.Reddit(
     user_agent=Config.REDDIT_USER_AGENT,
 )
 
-def fetch_reddit_posts(subreddit: str = "soccercirclejerk", limit: int = 20):
+def fetch_reddit_posts(subreddit: str = "soccercirclejerk", limit: int = 20, category=ContentCategoryConst.FOOTBALL_MEME.value):
     """Fetch recent trending Reddit posts."""
     posts = []
     for submission in reddit.subreddit(subreddit).hot(limit=limit):
@@ -26,6 +27,7 @@ def fetch_reddit_posts(subreddit: str = "soccercirclejerk", limit: int = 20):
         posts.append({
             "source_id": submission.id,
             "source": "reddit",
+            "category": category,
             "title": submission.title,
             "url": submission.url,
             "type": post_type,
